@@ -37,6 +37,8 @@ public:
     void update(const led_id & id, bool value) noexcept {
         if(value == true) {
             banks_[std::get<0>(id)] |= (1 << std::get<1>(id));
+        } else {
+            banks_[std::get<0>(id)] &= ~(1 << std::get<1>(id));
         }
     }
 
@@ -52,7 +54,7 @@ protected:
     struct hid_data {
         uint8_t id_;
         uint8_t banks_[LED_NR_BANKS];
-        uint8_t reserved_[64 - LED_NR_BANKS];
+        uint8_t reserved_[62 - LED_NR_BANKS];
     };
     #pragma pack(pop)
 

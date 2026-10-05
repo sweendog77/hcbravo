@@ -102,6 +102,17 @@ public:
     bool
     empty() const noexcept { return this->data_.empty(); }
 
+    inline
+    std::optional<float>
+    get_float() const noexcept {
+        for(const auto & data : this->data_) {
+            if(auto * ref = dynamic_cast<float_data_ref *>(data.get())) {
+                return ref->get();
+            }
+        }
+        return std::nullopt;
+    }
+
 #if defined(HCBRAVO_PROFILE_TESTS)
     inline
     const std::vector<bool_data_ref::ptr_type> &
@@ -354,10 +365,11 @@ public:
     bool 
     volts() const noexcept { return this->volts_.is_set(); }
 
-    inline 
-    std::optional<bool> 
+    inline
+    std::optional<float>
     gear() const noexcept {
-        return this->gear_.transform(&value_data_ref::is_set);
+        if(!this->gear_.has_value()) return std::nullopt;
+        return this->gear_->get_float();
     }
 
 #if defined(HCBRAVO_PROFILE_TESTS)

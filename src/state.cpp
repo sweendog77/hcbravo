@@ -93,15 +93,20 @@ state::flight_iteration(float call, float iter, int counter, void * _this) noexc
     }
 
     if(system.gear().has_value()) {
-        bool status = system.gear().value();
-        mask.update(LED_LDG_L_GREEN, status);
-        mask.update(LED_LDG_L_RED, !status);
-
-        mask.update(LED_LDG_N_GREEN, status);
-        mask.update(LED_LDG_N_RED, !status);
+        float gear = system.gear().value();
     
-        mask.update(LED_LDG_R_GREEN, status);
-        mask.update(LED_LDG_R_RED, !status);
+        bool gear_up = gear <= 0.0f;
+        bool gear_down = gear >= 1.0f;
+        bool gear_transit = !gear_up && !gear_down;
+    
+        mask.update(LED_LDG_L_GREEN, gear_down);
+        mask.update(LED_LDG_L_RED, gear_transit);
+    
+        mask.update(LED_LDG_N_GREEN, gear_down);
+        mask.update(LED_LDG_N_RED, gear_transit);
+    
+        mask.update(LED_LDG_R_GREEN, gear_down);
+        mask.update(LED_LDG_R_RED, gear_transit);
     }
 
     if(plane->annunciator().has_value()) {
@@ -149,7 +154,14 @@ state::init() noexcept
         return std::unexpected(error::hid_error);
     }
     st->hid_initialized_ = true;
-    st->hid_ = hid_open(0x294b, 0x1901, nullptr);
+    hid_device_info *devices = hid_enumerate(0x294b, 0x1909);
+    for (hid_device_info *dev = devices; dev != nullptr; dev = dev->next) {
+        if (dev->usage_page == 0xff02 && dev->usage == 0x0065) {
+            st->hid_ = hid_open_path(dev->path);
+            break;
+        }
+    }
+    hid_free_enumeration(devices);
     if(st->hid_ == nullptr) {
         logger() << "Open HoneyComb Bravo Quadrant not Detected";
         return std::unexpected(error::not_detected);

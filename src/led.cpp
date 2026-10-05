@@ -13,6 +13,7 @@ led_state::led_state() noexcept :
     hid_(nullptr)
 {
     ::memset(reinterpret_cast<void *>(&u), 0, sizeof(u));
+    u.state_.id_ = 0x65;
 }
 
 led_state::led_state(led_state && other) noexcept :
