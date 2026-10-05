@@ -2,6 +2,15 @@
 
 An XPlane 12.X plugin to drive the knobs and LEDs on the HoneyComb Bravo Throttle.
 
+## Honeycomb Bravo Lite Support
+
+This fork adds **Honeycomb Bravo Lite** landing gear LED support for X-Plane 12 on Windows.
+
+Bravo Lite gear indications: **green** when down and locked, **red** while in transit, and **off** when fully retracted.
+
+See [Bravo Lite documentation](BRAVO_LITE.md) for installation and technical details, or download the tested Windows plugin from the [v1.0 release](https://github.com/sweendog77/hcbravo/releases/tag/v1.0).
+
+
 ## Introduction
 
 There are a few XPlane plugins for the HoneyComb Bravo Throttle, but none of them fulfill
